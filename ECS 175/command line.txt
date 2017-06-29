@@ -1,0 +1,14 @@
+g++ sample.cpp -lglut -IGL -o Sample
+
+
+float * pixelBuffer;
+pixelBuffer = new float[width*height*3];
+glDrawPixels(int width, int height, GL RGB format, GL_FLOAT type, pixelBuffer);
+
+         x    y    r    g    b
+makePix(0,0, 0.0, 0.5, 0.5, 0.5, pixelBuffer);
+ {
+	pixelBuffer[pos]:r
+               [pos+1]:g
+               [pos+2]:b
+}

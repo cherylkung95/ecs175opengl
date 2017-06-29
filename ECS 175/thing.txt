@@ -1,0 +1,19 @@
+Pixel *pixels = new Pixel[polys[i]->numPts * 2];
+			bool shift = false;
+			int numPts;
+			if (polys[i]->lines[j]->last->x < polys[i]->lines[j]->first->x)
+			{
+				Pixel *temp = polys[i]->lines[j]->last;
+				polys[i]->lines[j]->last = polys[i]->lines[j]->first;
+				polys[i]->lines[j]->first = temp;
+			}//order first and last
+
+			getLineAlg(polys[i]->lines[j]);
+			Pixel pix(polys[i]->lines[j]->first->x, polys[i]->lines[j]->first->y);
+			polys[i]->lines[j]->toFirst();
+			ex
+
+			if (polys[i]->lines[j]->first != NULL && shift == false)
+			{
+				pixel[j]polys[i]->lines[j]->
+			}
