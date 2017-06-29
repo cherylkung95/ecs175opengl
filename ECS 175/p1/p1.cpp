@@ -10,48 +10,48 @@ using namespace std;
 unsigned int window[480][360];
 int windX = 360;
 int windY = 480;
-Polygon** polys;
+myGL::Polygon** polys;
 int numPl;
 int numLine=0;
 
-void drawLine(Line* line);
-void drawBren(Line* line);
+void drawLine(myGL::Line* line);
+void drawBren(myGL::Line* line);
 void translate(double xshift, double yshift, int pNum);
-void rotate(double angle, Polygon *poly);
-void scale(int degree, Polygon *poly);
+void rotate(double angle, myGL::Polygon *poly);
+void scale(int degree, myGL::Polygon *poly);
 void clip();
-Pixel* getCenter(Polygon pl);
+myGL::Pixel* getCenter(myGL::Polygon pl);
 
-Pixel::Pixel(double x1, double y1)
+myGL::Pixel::Pixel(double x1, double y1)
 {
 	x = x1;
 	y = y1;
 	next = NULL;
 }
-Pixel::~Pixel()
+myGL::Pixel::~Pixel()
 {
 
 }
-Line::Line()
+myGL::Line::Line()
 {
 	num = 2;
 }
-Line::Line(Pixel* first1, Pixel* last1)
+myGL::Line::Line(Pixel* first1, Pixel* last1)
 {
 	first = first1;
 	last = last1;
 	first->next = last;
 	num = 2;
 }
-Line::~Line()
+myGL::Line::~Line()
 {
 
 }
-Polygon::Polygon()
+myGL::Polygon::Polygon()
 {
 
 }
-Polygon::~Polygon()
+myGL::Polygon::~Polygon()
 {
 	delete[] lines;
 	delete[] points;
@@ -61,15 +61,15 @@ void read()
 	int numPt;
 	cout << "number of polygons: ";
 	cin >> numPl;
-	polys = new Polygon*[numPl];
+	polys = new myGL::Polygon*[numPl];
 
 	for (int p = 0; p < numPl; p++)
 	{
-		polys[p] = new Polygon();
+		polys[p] = new myGL::Polygon();
 		cout << "Polygon "<< p+1 << "\n"<< "number of points: ";
 		cin >> numPt;
-		Pixel** pix = new Pixel*[numPt];
-		polys[p]->lines = new Line*[numPt];
+		myGL::Pixel** pix = new myGL::Pixel*[numPt];
+		polys[p]->lines = new myGL::Line*[numPt];
 
 		for (int i = 0; i < numPt; i++)
 		{
@@ -79,16 +79,16 @@ void read()
 			cout << "y: ";
 			cin >> y;
 
-			pix[i] = new Pixel(x, y);
+			pix[i] = new myGL::Pixel(x, y);
 		}//gets all the points
 
 		int j;
 		for (j = 0; j < numPt - 1; j++)
 		{
-			Line *line1 = new Line(pix[j], pix[j + 1]);
+			myGL::Line *line1 = new myGL::Line(pix[j], pix[j + 1]);
 			polys[p]->lines[j] = line1;
 		}
-		Line *line1 = new Line(pix[0], pix[j]);
+		myGL::Line *line1 = new myGL::Line(pix[0], pix[j]);
 		polys[p]->lines[j] = line1;
 		polys[p]->numPts = numPt; //creates lines from points
 
@@ -143,7 +143,7 @@ void read()
 		}
 	}*/
 }
-void getLineAlg(Line* line)
+void getLineAlg(myGL::Line* line)
 {
 	if (numLine == 0)
 	{
@@ -232,7 +232,7 @@ void getWindowSize()
 		clip();
 	}
 }
-Pixel *getCenter(const Polygon *pl)
+myGL::Pixel *getCenter(const myGL::Polygon *pl)
 {
 	int xAvg=0, yAvg=0;
 	for (int i = 0; i < pl->numPts; i++)
@@ -245,10 +245,10 @@ Pixel *getCenter(const Polygon *pl)
 	yAvg = yAvg / pl->numPts;
 
 	//cout << xAvg << " " << yAvg << endl;
-	Pixel *pix = new Pixel(xAvg, yAvg);
+	myGL::Pixel *pix = new myGL::Pixel(xAvg, yAvg);
 	return pix;
 }
-void inputLine(Line* line)
+void inputLine(myGL::Line* line)
 {
 	int x = line->first->x;
 	int y = line->first->y;
@@ -267,11 +267,11 @@ void inputLine(Line* line)
 		line->itr = line->itr->next;
 	}
 }
-void drawLine(Line* line)
+void drawLine(myGL::Line* line)
 {
 	if (line->last->x < line->first->x)
 	{
-		Pixel *temp = line->last;
+		myGL::Pixel *temp = line->last;
 		line->last = line->first;
 		line->first = temp;
 	}
@@ -287,7 +287,7 @@ void drawLine(Line* line)
 		line->toFirst();
 		for (int i = xi + 1; i < xf; i++)
 		{
-			Pixel *pixel = new Pixel(i, y);
+			myGL::Pixel *pixel = new myGL::Pixel(i, y);
 			line->itr->next = pixel;
 			line->itr = line->itr->next;
 			(line->num)++;
@@ -314,7 +314,7 @@ void drawLine(Line* line)
 		line->toFirst();
 		for (int i = yi + 1; i < yf; i++)
 		{
-			Pixel *pixel = new Pixel(x, i);
+			myGL::Pixel *pixel = new myGL::Pixel(x, i);
 			line->itr->next = pixel;
 			line->itr = line->itr->next;
 			(line->num)++;
@@ -331,7 +331,7 @@ void drawLine(Line* line)
 		for (int i = 1; i < abs(difX); i++)
 		{
 			int y = (m*i + b + 0.5);
-			Pixel *pixel = new Pixel((line->itr->x) + 1, y);
+			myGL::Pixel *pixel = new myGL::Pixel((line->itr->x) + 1, y);
 			line->itr->next = pixel;
 			line->itr = line->itr->next;
 			(line->num)++;
@@ -342,7 +342,7 @@ void drawLine(Line* line)
 	{
 		if (line->last->x < line->first->x)
 		{
-			Pixel *temp = line->last;
+			myGL::Pixel *temp = line->last;
 			line->last = line->first;
 			line->first = temp;
 		}
@@ -353,7 +353,7 @@ void drawLine(Line* line)
 		for (int i = 1; i < abs(difY); i++)
 		{
 			int x = (m*i + b + 0.5);
-			Pixel *pixel = new Pixel(x, (line->itr->y) + 1);
+			myGL::Pixel *pixel = new myGL::Pixel(x, (line->itr->y) + 1);
 			line->itr->next = pixel;
 			line->itr = line->itr->next;
 			(line->num)++;
@@ -371,7 +371,7 @@ void drawLine(Line* line)
 		for (int i = 1; i < abs(difY); i++)
 		{
 			int x = (abs(m)*i + b + 0.5);
-			Pixel *pixel = new Pixel(x, (line->itr->y) - 1);
+			myGL::Pixel *pixel = new myGL::Pixel(x, (line->itr->y) - 1);
 			line->itr->next = pixel;
 			line->itr = line->itr->next;
 			(line->num)++;
@@ -391,11 +391,11 @@ void drawLine(Line* line)
 	*/
 
 }
-void drawBren(Line* line)
+void drawBren(myGL::Line* line)
 {
 	if (line->last->x < line->first->x)
 	{
-		Pixel *temp = line->last;
+		myGL::Pixel *temp = line->last;
 		line->last = line->first;
 		line->first = temp;
 	}
@@ -474,7 +474,7 @@ void drawBren(Line* line)
 		line->toFirst();
 		int yi = line->first->y;//initial yi
 
-		line->first->next = new Pixel((line->first->x)+1, yi + yadd);//create next Pixel with x+1, yi + either 1 or 0
+		line->first->next = new myGL::Pixel((line->first->x)+1, yi + yadd);//create next Pixel with x+1, yi + either 1 or 0
 		line->num++;
 		line->itr = line->itr->next;
 
@@ -492,7 +492,7 @@ void drawBren(Line* line)
 				yadd = 0;
 			}
 
-			Pixel *pix = new Pixel(i + 1, y + yadd);
+			myGL::Pixel *pix = new myGL::Pixel(i + 1, y + yadd);
 			yi = y;
 			line->itr->next = pix;
 			line->num++;
@@ -519,7 +519,7 @@ void drawBren(Line* line)
 		line->toFirst();
 		int yi = line->first->y;//initial yi
 
-		line->first->next = new Pixel((line->first->x) + 1, yi + yadd);//create next Pixel with x+1, yi + either 1 or 0
+		line->first->next = new myGL::Pixel((line->first->x) + 1, yi + yadd);//create next Pixel with x+1, yi + either 1 or 0
 		line->num++;
 		line->itr = line->itr->next;
 
@@ -538,7 +538,7 @@ void drawBren(Line* line)
 				yadd = 0;
 			}
 
-			Pixel *pix = new Pixel(i + 1, y + yadd);
+			myGL::Pixel *pix = new myGL::Pixel(i + 1, y + yadd);
 			yi = y;
 			line->itr->next = pix;
 			line->num++;
@@ -565,7 +565,7 @@ void drawBren(Line* line)
 		line->toFirst();
 		int xi = line->first->x;//initial xi
 
-		line->first->next = new Pixel(xi+xadd,(line->first->y) - 1);//create next Pixel with x+1, yi + either 1 or 0
+		line->first->next = new myGL::Pixel(xi+xadd,(line->first->y) - 1);//create next Pixel with x+1, yi + either 1 or 0
 		line->num++;
 		line->itr = line->itr->next;
 
@@ -583,7 +583,7 @@ void drawBren(Line* line)
 				xadd = 0;
 			}
 
-			Pixel *pix = new Pixel(x + xadd,i-1);
+			myGL::Pixel *pix = new myGL::Pixel(x + xadd,i-1);
 			xi = x;
 			line->itr->next = pix;
 			line->num++;
@@ -610,7 +610,7 @@ void drawBren(Line* line)
 		line->toFirst();
 		int xi = line->first->x;//initial xi
 
-		line->first->next = new Pixel(xi + xadd, (line->first->y) + 1);//create next Pixel with x+1, yi + either 1 or 0
+		line->first->next = new myGL::Pixel(xi + xadd, (line->first->y) + 1);//create next Pixel with x+1, yi + either 1 or 0
 		line->num++;
 		line->itr = line->itr->next;
 
@@ -628,7 +628,7 @@ void drawBren(Line* line)
 				xadd = 0;
 			}
 
-			Pixel *pix = new Pixel(x + xadd, i + 1);
+			myGL::Pixel *pix = new myGL::Pixel(x + xadd, i + 1);
 			xi = x;
 			line->itr->next = pix;
 			line->num++;
@@ -653,13 +653,13 @@ void rastPoly()
 	bool in = true;
 	for (int i = 0; i < 480; i++)
 	{
-		Pixel *prev = NULL;
-		Pixel *first = NULL;
+		myGL::Pixel *prev = NULL;
+		myGL::Pixel *first = NULL;
 		for (int j = 0; j < 360; j++)
 		{
 			if (window[i][j] == 255)
 			{
-				Pixel *out = new Pixel(j, i);
+				myGL::Pixel *out = new myGL::Pixel(j, i);
 				if (prev == NULL)
 				{
 					prev = out;
@@ -675,7 +675,7 @@ void rastPoly()
 		}
 		if (prev != NULL)
 		{
-			Pixel *itr =first;
+			myGL::Pixel *itr =first;
 			while (itr!=NULL && itr->next != NULL)
 			{
 				for (int k = 0; k < numPl; k++)
@@ -694,7 +694,7 @@ void rastPoly()
 				}
 				if (in == true && itr->next != NULL)
 				{
-					Line *line = new Line(itr, itr->next);
+					myGL::Line *line = new myGL::Line(itr, itr->next);
 					drawLine(line);
 					inputLine(line);
 					itr = itr->next->next;
@@ -763,16 +763,16 @@ void translate(double xshift, double yshift, int pNum)
 	int j;
 	for (j = 0; j < polys[pNum]->numPts - 1; j++)
 	{
-		Line *line1 = new Line(polys[pNum]->points[j], polys[pNum]->points[j + 1]);
+		myGL::Line *line1 = new myGL::Line(polys[pNum]->points[j], polys[pNum]->points[j + 1]);
 		polys[pNum]->lines[j] = line1;
 	}
-	Line *line1 = new Line(polys[pNum]->points[0], polys[pNum]->points[j]);
+	myGL::Line *line1 = new myGL::Line(polys[pNum]->points[0], polys[pNum]->points[j]);
 	polys[pNum]->lines[j] = line1;
 
 }
-void rotate(double angle, Polygon *poly)
+void rotate(double angle, myGL::Polygon *poly)
 {
-	Pixel *pix = getCenter(poly);
+	myGL::Pixel *pix = getCenter(poly);
 	translate(-(pix->x), -(pix->y), poly->polyNum);
 
 	double cosa = cos(angle);
@@ -791,16 +791,16 @@ void rotate(double angle, Polygon *poly)
 	int j;
 	for (j = 0; j < poly->numPts - 1; j++)
 	{
-		Line *line1 = new Line(poly->points[j], poly->points[j + 1]);
+		myGL::Line *line1 = new myGL::Line(poly->points[j], poly->points[j + 1]);
 		poly->lines[j] = line1;
 	}
-	Line *line1 = new Line(poly->points[0], poly->points[j]);
+	myGL::Line *line1 = new myGL::Line(poly->points[0], poly->points[j]);
 	poly->lines[j] = line1;
 }
-void scale(int degree, Polygon *poly)
+void scale(int degree, myGL::Polygon *poly)
 {
 	
-	Pixel *pix = getCenter(poly);
+	myGL::Pixel *pix = getCenter(poly);
 	translate(-(pix->x), -(pix->y), poly->polyNum);
 
 	for (int i = 0; i < poly->numPts; i++)
@@ -814,10 +814,10 @@ void scale(int degree, Polygon *poly)
 	int j;
 	for (j = 0; j < poly->numPts - 1; j++)
 	{
-		Line *line1 = new Line(poly->points[j], poly->points[j + 1]);
+		myGL::Line *line1 = new myGL::Line(poly->points[j], poly->points[j + 1]);
 		poly->lines[j] = line1;
 	}
-	Line *line1 = new Line(poly->points[0], poly->points[j]);
+	myGL::Line *line1 = new myGL::Line(poly->points[0], poly->points[j]);
 	poly->lines[j] = line1;
 	
 }
@@ -828,12 +828,12 @@ void clip()
 	int west = (360 - windX)/2;
 	for (int i = 0; i < numPl; i++)
 	{
-		Polygon *p = new Polygon();
+		myGL::Polygon *p = new myGL::Polygon();
 		int pointsItr = 0;
 		for (int j = 0; j < polys[i]->numPts; j++)
 		{
 			getLineAlg(polys[i]->lines[j]);
-			p->points = new Pixel*[polys[i]->numPts * 2];
+			p->points = new myGL::Pixel*[polys[i]->numPts * 2];
 			bool shift = false;
 			while (polys[i]->lines[j]->first->x < west && polys[i]->lines[j]->first != NULL)
 			{
@@ -863,10 +863,10 @@ void clip()
 		int j;
 		for (j = 0; j < polys[i]->numPts - 1; j++)
 		{
-			Line *line1 = new Line(polys[i]->points[j], polys[i]->points[j + 1]);
+			myGL::Line *line1 = new myGL::Line(polys[i]->points[j], polys[i]->points[j + 1]);
 			polys[i]->lines[j] = line1;
 		}
-		Line *line1 = new Line(polys[i]->points[0], polys[i]->points[j]);
+		myGL::Line *line1 = new myGL::Line(polys[i]->points[0], polys[i]->points[j]);
 		polys[i]->lines[j] = line1;
 		
 	}//for each polygon
